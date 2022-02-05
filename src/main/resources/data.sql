@@ -1,0 +1,1 @@
+INSERT INTO BILL (id, description, value, recurrent, due) VALUES (1, 'aa', 122, false, '2012-09-17 18:47:52.069')
