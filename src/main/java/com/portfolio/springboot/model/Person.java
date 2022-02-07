@@ -19,4 +19,11 @@ public class Person {
     private Boolean disable = false;
     @OneToMany(mappedBy = "owner")
     private List<Bill> bills = new ArrayList<>();
+
+    public Person() {}
+
+    public Person(String name, Boolean disable) {
+        this.name = name;
+        this.disable = disable;
+    }
 }

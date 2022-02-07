@@ -21,7 +21,7 @@ import java.net.URI;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/bill")
+@RequestMapping("/bills")
 public class BillController {
     @Autowired
     private BillRepository billRepository;
@@ -30,14 +30,7 @@ public class BillController {
     public Page<BillDtoResponse> getAll(
             @PageableDefault(sort = "due", direction = Sort.Direction.ASC) Pageable pagination
     ) {
-        try {
-            Page<Bill> bills = billRepository.findAll(pagination);
-            System.out.println("bills" + bills);
-            return bills.map(BillDtoResponse::new);
-        } catch (Exception e) {
-            System.out.println(e);
-            return Page.empty();
-        }
+        return billRepository.findAll(pagination).map(BillDtoResponse::new);
     }
 
     @GetMapping("/{id}")
