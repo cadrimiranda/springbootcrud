@@ -27,10 +27,17 @@ public class BillController {
     private BillRepository billRepository;
 
     @GetMapping("/getall")
-    public Page<Bill> getAll(
+    public Page<BillDtoResponse> getAll(
             @PageableDefault(sort = "due", direction = Sort.Direction.ASC) Pageable pagination
     ) {
-        return billRepository.findAll(pagination);
+        try {
+            Page<Bill> bills = billRepository.findAll(pagination);
+            System.out.println("bills" + bills);
+            return bills.map(BillDtoResponse::new);
+        } catch (Exception e) {
+            System.out.println(e);
+            return Page.empty();
+        }
     }
 
     @GetMapping("/{id}")

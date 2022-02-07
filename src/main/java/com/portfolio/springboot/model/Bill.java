@@ -24,6 +24,9 @@ public class Bill {
     private LocalDate creation = LocalDate.now();
     @Column
     private Boolean disabled = false;
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private Person owner = new Person();
 
     public Bill() {
     }
