@@ -37,7 +37,6 @@ public class BillController {
     public ResponseEntity<BillDtoResponse> getById(@PathVariable Long id) {
         Optional<Bill> bill = billRepository.findById(id);
         return bill.map(value -> ResponseEntity.ok(new BillDtoResponse(value))).orElseGet(() -> ResponseEntity.notFound().build());
-
     }
 
     @PostMapping

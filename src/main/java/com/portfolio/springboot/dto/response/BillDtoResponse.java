@@ -4,7 +4,7 @@ import com.portfolio.springboot.model.Bill;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter @Setter
 public class BillDtoResponse {
@@ -12,7 +12,7 @@ public class BillDtoResponse {
     private String description;
     private Float value;
     private Boolean recurrent;
-    private LocalDateTime due;
+    private LocalDate due;
     private Boolean disabled;
 
     public BillDtoResponse(Bill bill) {

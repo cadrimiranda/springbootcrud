@@ -4,8 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Getter @Setter
@@ -20,16 +19,16 @@ public class Bill {
     @Column
     private Boolean recurrent;
     @Column
-    private LocalDateTime due;
+    private LocalDate due;
     @Column
-    private LocalDateTime creation = LocalDateTime.now();
+    private LocalDate creation = LocalDate.now();
     @Column
     private Boolean disabled = false;
 
     public Bill() {
     }
 
-    public Bill(String description, Float value, Boolean recurrent, LocalDateTime due) {
+    public Bill(String description, Float value, Boolean recurrent, LocalDate due) {
         this.description = description;
         this.value = value;
         this.recurrent = recurrent;
