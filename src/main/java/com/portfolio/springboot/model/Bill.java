@@ -1,9 +1,14 @@
 package com.portfolio.springboot.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
+@Getter @Setter
 public class Bill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,55 +20,19 @@ public class Bill {
     @Column
     private Boolean recurrent;
     @Column
-    private Date due;
+    private LocalDateTime due;
+    @Column
+    private LocalDateTime creation = LocalDateTime.now();
+    @Column
+    private Boolean disabled = false;
 
     public Bill() {
     }
 
-    public Bill(String description, Float value, Boolean recurrent, Date due) {
+    public Bill(String description, Float value, Boolean recurrent, LocalDateTime due) {
         this.description = description;
         this.value = value;
         this.recurrent = recurrent;
-        this.due = due;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Float getValue() {
-        return value;
-    }
-
-    public void setValue(Float value) {
-        this.value = value;
-    }
-
-    public Boolean getRecurrent() {
-        return recurrent;
-    }
-
-    public void setRecurrent(Boolean recurrent) {
-        this.recurrent = recurrent;
-    }
-
-    public Date getDue() {
-        return due;
-    }
-
-    public void setDue(Date due) {
         this.due = due;
     }
 }
