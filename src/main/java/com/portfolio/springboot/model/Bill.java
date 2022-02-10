@@ -1,5 +1,6 @@
 package com.portfolio.springboot.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,17 +25,18 @@ public class Bill {
     private LocalDate creation = LocalDate.now();
     @Column
     private Boolean disabled = false;
-    @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
+    @ManyToOne(targetEntity = Person.class, fetch = FetchType.EAGER)
+    @JoinColumn(name = "owner_id")
     private Person owner = new Person();
 
     public Bill() {
     }
 
-    public Bill(String description, Float value, Boolean recurrent, LocalDate due) {
+    public Bill(String description, Float value, Boolean recurrent, LocalDate due, Person owner) {
         this.description = description;
         this.value = value;
         this.recurrent = recurrent;
         this.due = due;
+        this.owner = owner;
     }
 }

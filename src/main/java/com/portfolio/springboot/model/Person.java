@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter @Setter
@@ -17,8 +15,6 @@ public class Person {
     private String name;
     @Column
     private Boolean disable = false;
-    @OneToMany(mappedBy = "owner")
-    private List<Bill> bills = new ArrayList<>();
 
     public Person() {}
 

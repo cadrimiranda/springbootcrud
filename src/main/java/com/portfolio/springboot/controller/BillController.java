@@ -4,27 +4,46 @@ import com.portfolio.springboot.dto.request.BillDtoRequest;
 import com.portfolio.springboot.dto.response.BillDtoResponse;
 import com.portfolio.springboot.dto.update.BillDtoUpdate;
 import com.portfolio.springboot.model.Bill;
+import jdk.swing.interop.SwingInterOpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.UnexpectedRollbackException;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.portfolio.springboot.repository.BillRepository;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
+@ControllerAdvice
 @RequestMapping("/bills")
 public class BillController {
     @Autowired
     private BillRepository billRepository;
+
+    @ExceptionHandler(value = Exception.class)
+    public ResponseEntity<?> handleException(Exception e) {
+        if(e instanceof DataIntegrityViolationException){
+            DataIntegrityViolationException ex = (DataIntegrityViolationException) e;
+            System.out.println(ex);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not found");
+        }
+
+        System.out.println(e);
+
+        return ResponseEntity.internalServerError().build();
+    }
 
     @GetMapping("/getall")
     public Page<BillDtoResponse> getAll(
@@ -40,16 +59,17 @@ public class BillController {
     }
 
     @PostMapping
-    @Transactional
-    public ResponseEntity<BillDtoResponse> saveOne(
+    @Transactional(rollbackFor = Exception.class, readOnly = false)
+    public ResponseEntity<?> saveOne(
             @RequestBody @Valid BillDtoRequest billRequest,
             UriComponentsBuilder uriBuilder
     ) {
         Bill bill = billRequest.convert();
-        billRepository.save(bill);
 
-        URI uri = uriBuilder.path("/bill/{id}").buildAndExpand(bill.getId()).toUri();
-        return ResponseEntity.created(uri).body(new BillDtoResponse(bill));
+            billRepository.saveAndFlush(bill);
+
+            URI uri = uriBuilder.path("/bills/{id}").buildAndExpand(bill.getId()).toUri();
+            return ResponseEntity.created(uri).body(new BillDtoResponse(bill));
     }
 
     @PutMapping("/{id}")
@@ -67,5 +87,11 @@ public class BillController {
         Bill bill = billOptional.get();
         billRequest.update(bill);
         return ResponseEntity.ok(new BillDtoResponse(bill));
+    }
+
+    @GetMapping("/byowner/{userid}")
+    public ResponseEntity<List<BillDtoResponse>> getBillsByUser(@PathVariable Long userid) {
+        List<BillDtoResponse> bills = billRepository.findAllByOwnerId(userid).stream().map(BillDtoResponse::new).toList();
+        return ResponseEntity.ok(bills);
     }
 }

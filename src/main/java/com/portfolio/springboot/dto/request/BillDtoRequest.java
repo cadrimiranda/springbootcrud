@@ -1,6 +1,7 @@
 package com.portfolio.springboot.dto.request;
 
 import com.portfolio.springboot.model.Bill;
+import com.portfolio.springboot.model.Person;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
@@ -22,8 +23,11 @@ public class BillDtoRequest {
     @NotNull @Future
     private LocalDate due;
 
+    @NotNull
+    private Person owner;
+
     public Bill convert() {
-        return new Bill(this.description, this.value, this.recurrent, this.due);
+        return new Bill(this.description, this.value, this.recurrent, this.due, this.getOwner());
     }
 
     public void update(Bill bill) {
@@ -31,5 +35,6 @@ public class BillDtoRequest {
         bill.setDue(this.due);
         bill.setRecurrent(this.recurrent);
         bill.setValue(this.value);
+        bill.setOwner(this.getOwner());
     }
 }
