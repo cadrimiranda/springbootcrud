@@ -12,8 +12,10 @@ public class MonthDtoRequest implements GenericDtoInsert<Month> {
 
     @Override
     public Month convert() {
-        Month month = Month.builder().name(this.name).disabled(this.disabled).build();
-        System.out.println(month.getName());
-        return month;
+        return Month
+                .builder()
+                .name(this.name)
+                .disabled(this.disabled)
+                .build();
     }
 }

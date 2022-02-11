@@ -27,7 +27,7 @@ public class Bill {
     private Boolean disabled = false;
     @ManyToOne(targetEntity = Person.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "owner_id")
-    private Person owner = new Person();
+    private Person owner;
 
     public Bill() {
     }
