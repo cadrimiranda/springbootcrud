@@ -4,7 +4,6 @@ import com.portfolio.springboot.dto.request.BillDtoRequest;
 import com.portfolio.springboot.dto.response.BillDtoResponse;
 import com.portfolio.springboot.dto.update.BillDtoUpdate;
 import com.portfolio.springboot.model.Bill;
-import jdk.swing.interop.SwingInterOpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -13,7 +12,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.portfolio.springboot.repository.BillRepository;
@@ -23,7 +21,6 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @ControllerAdvice
@@ -34,14 +31,6 @@ public class BillController {
 
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<?> handleException(Exception e) {
-        if(e instanceof DataIntegrityViolationException){
-            DataIntegrityViolationException ex = (DataIntegrityViolationException) e;
-            System.out.println(ex);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not found");
-        }
-
-        System.out.println(e);
-
         return ResponseEntity.internalServerError().build();
     }
 
