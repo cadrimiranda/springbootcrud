@@ -1,7 +1,8 @@
 package com.portfolio.springboot.repository;
 
+import com.portfolio.springboot.dto.response.MonthDtoResponse;
+import com.portfolio.springboot.generic.GenericRepository;
 import com.portfolio.springboot.model.Month;
-import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MonthRepository extends JpaRepository<Month, Long> {
+public interface MonthRepository extends GenericRepository<Month, MonthDtoResponse> {
 }

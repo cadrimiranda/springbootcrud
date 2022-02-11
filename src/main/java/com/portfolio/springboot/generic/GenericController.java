@@ -17,12 +17,14 @@ public abstract class GenericController<
 {
 
     private final GenericService<T, DtoResponse, DtoInsert, DtoUpdate> service;
+    private String path;
 
-    public GenericController(GenericRepository<T, DtoResponse> repository) {
-        this.service = new GenericService<T, DtoResponse, DtoInsert, DtoUpdate>(repository) {};
+    public GenericController(String path) {
+        this.path = path;
+        this.service = new GenericService<T, DtoResponse, DtoInsert, DtoUpdate>() {};
     }
 
-    public Page<DtoResponse> getPage(Pageable pageable){
+    public Page<DtoResponse> findAll(Pageable pageable){
         Page<T> list = service.getPage(pageable);
 
         return service.getPage(pageable).map(GenericEntity::toDtoResponse);
@@ -33,23 +35,27 @@ public abstract class GenericController<
         return dbDomain.map(value -> ResponseEntity.ok(value.toDtoResponse())).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    public ResponseEntity<DtoUpdate> update(DtoUpdate updated){
-        if (service.update(updated)) {
+    public ResponseEntity<DtoUpdate> update(Long id, DtoUpdate updated){
+        if (service.update(id, updated)) {
             return ResponseEntity.ok().build();
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.notFound().build() ;
     }
 
     public ResponseEntity<?> create(DtoInsert created,
                                     UriComponentsBuilder uriBuilder
     ){
         T dboDomain = service.create(created);
-        URI uri = uriBuilder.path("/bills/{id}").buildAndExpand(dboDomain.getId()).toUri();
+        URI uri = uriBuilder.path("/{path}/{id}").buildAndExpand(this.path, dboDomain.getId()).toUri();
         return ResponseEntity.created(uri).body(dboDomain.toDtoResponse());
     }
 
     public ResponseEntity<String> delete(Long id){
         service.delete(id);
         return ResponseEntity.ok("Ok");
+    }
+
+    public void setRepository(GenericRepository<T, DtoResponse> repository) {
+        this.service.setRepository(repository);
     }
 }

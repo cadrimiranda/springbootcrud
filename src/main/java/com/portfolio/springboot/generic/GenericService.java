@@ -1,12 +1,14 @@
 package com.portfolio.springboot.generic;
 
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-
+@Setter
 public abstract class GenericService<
         T extends GenericEntity<T, DtoResponse>,
         DtoResponse,
@@ -15,10 +17,9 @@ public abstract class GenericService<
         >
 {
 
-    private final GenericRepository<T, DtoResponse> repository;
+    private GenericRepository<T, DtoResponse> repository;
 
-    public GenericService(GenericRepository<T, DtoResponse> repository) {
-        this.repository = repository;
+    public GenericService() {
     }
 
     public Page<T> getPage(Pageable pageable){
@@ -30,9 +31,9 @@ public abstract class GenericService<
     }
 
     @Transactional
-    public boolean update(DtoUpdate updateRequest){
-        Optional<T> dbDomain = get(updateRequest.getId());
-        dbDomain.ifPresent(updateRequest::update);
+    public boolean update(Long id, DtoUpdate updater){
+        Optional<T> dbDomain = get(id);
+        dbDomain.ifPresent(updater::update);
 
         return dbDomain.isPresent();
     }
