@@ -5,7 +5,6 @@ import com.portfolio.springboot.dto.response.BillDtoResponse;
 import com.portfolio.springboot.dto.update.BillDtoUpdate;
 import com.portfolio.springboot.model.Bill;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
