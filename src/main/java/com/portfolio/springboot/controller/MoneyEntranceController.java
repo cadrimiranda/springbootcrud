@@ -1,6 +1,7 @@
 package com.portfolio.springboot.controller;
 
 import com.portfolio.springboot.dto.request.MoneyEntranceDtoRequest;
+import com.portfolio.springboot.dto.response.BillDtoResponse;
 import com.portfolio.springboot.dto.response.MoneyEntranceDtoResponse;
 import com.portfolio.springboot.generic.GenericController;
 import com.portfolio.springboot.model.MoneyEntrance;
@@ -19,6 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/moneyentrance")
@@ -61,5 +63,15 @@ public class MoneyEntranceController extends GenericController<
             UriComponentsBuilder uriBuilder
     ) {
         return this.create(moneyEntranceDtoRequest, uriBuilder);
+    }
+
+    @GetMapping("/byowner/{userid}")
+    public ResponseEntity<List<MoneyEntranceDtoResponse>> getBillsByUser(@PathVariable Long userid) {
+        List<MoneyEntranceDtoResponse> bills = moneyEntranceRepository
+                .findAllByOwnerId(userid)
+                .stream()
+                .map(MoneyEntrance::toDtoResponse)
+                .toList();
+        return ResponseEntity.ok(bills);
     }
 }
