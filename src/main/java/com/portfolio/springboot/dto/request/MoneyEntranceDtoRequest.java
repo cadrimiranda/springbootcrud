@@ -6,7 +6,6 @@ import com.portfolio.springboot.model.Person;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
@@ -20,7 +19,6 @@ public class MoneyEntranceDtoRequest implements GenericDtoInsert<MoneyEntrance> 
     private Person owner;
     @NotNull @FutureOrPresent
     private LocalDate entranceDay;
-
 
     @Override
     public MoneyEntrance convert() {
