@@ -11,6 +11,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.MonthDay;
 
+@Entity
 @Builder
 @Getter @Setter
 public class BankAccount implements Serializable, GenericEntity<BankAccount, BankAccountDtoResponse> {
@@ -21,8 +22,7 @@ public class BankAccount implements Serializable, GenericEntity<BankAccount, Ban
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(targetEntity = Person.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "owner_id")
-    @JsonProperty("owner_id")
+    @JoinColumn(name = "person_id")
     private Person person;
     private Double amount;
     private String name;

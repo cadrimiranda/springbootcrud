@@ -74,7 +74,7 @@ public class BankAccountController extends GenericController<
     @GetMapping("/byowner/{userid}")
     public ResponseEntity<List<BankAccountDtoResponse>> getBillsByUser(@PathVariable Long userid) {
         List<BankAccountDtoResponse> bills = bankRepository
-                .findAllByOwnerId(userid)
+                .findAllByPersonId(userid)
                 .stream()
                 .map(BankAccount::toDtoResponse)
                 .toList();
