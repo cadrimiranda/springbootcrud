@@ -1,6 +1,5 @@
 package com.portfolio.springboot.dto.update;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.portfolio.springboot.generic.GenericDtoUpdate;
 import com.portfolio.springboot.model.BankAccount;
 import lombok.Getter;

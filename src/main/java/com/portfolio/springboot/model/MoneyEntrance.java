@@ -19,7 +19,12 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class MoneyEntrance implements Serializable, GenericEntity<MoneyEntrance, MoneyEntranceDtoResponse> {
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

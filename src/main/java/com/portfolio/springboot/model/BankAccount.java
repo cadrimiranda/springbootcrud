@@ -14,7 +14,11 @@ import java.time.MonthDay;
 @Builder
 @Getter @Setter
 public class BankAccount implements Serializable, GenericEntity<BankAccount, BankAccountDtoResponse> {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(targetEntity = Person.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "owner_id")

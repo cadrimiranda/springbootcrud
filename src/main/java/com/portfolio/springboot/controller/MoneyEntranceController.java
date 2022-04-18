@@ -1,7 +1,6 @@
 package com.portfolio.springboot.controller;
 
 import com.portfolio.springboot.dto.request.MoneyEntranceDtoRequest;
-import com.portfolio.springboot.dto.response.BillDtoResponse;
 import com.portfolio.springboot.dto.response.MoneyEntranceDtoResponse;
 import com.portfolio.springboot.generic.GenericController;
 import com.portfolio.springboot.model.MoneyEntrance;

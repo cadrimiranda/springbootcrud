@@ -1,10 +1,7 @@
 package com.portfolio.springboot.controller;
 
 import com.portfolio.springboot.dto.request.PersonDtoRequest;
-import com.portfolio.springboot.dto.response.BillDtoResponse;
 import com.portfolio.springboot.dto.response.PersonDtoResponse;
-import com.portfolio.springboot.dto.update.BillDtoUpdate;
-import com.portfolio.springboot.model.Bill;
 import com.portfolio.springboot.model.Person;
 import com.portfolio.springboot.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;

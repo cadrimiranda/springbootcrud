@@ -25,8 +25,6 @@ public abstract class GenericController<
     }
 
     public Page<DtoResponse> findAll(Pageable pageable){
-        Page<T> list = service.getPage(pageable);
-
         return service.getPage(pageable).map(GenericEntity::toDtoResponse);
     }
 

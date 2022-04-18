@@ -1,6 +1,5 @@
 package com.portfolio.springboot.dto.request;
 
-import com.portfolio.springboot.model.Bill;
 import com.portfolio.springboot.model.Person;
 import lombok.Getter;
 import lombok.Setter;
