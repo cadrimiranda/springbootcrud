@@ -16,19 +16,19 @@ public class PersonDtoRequest {
     private String name;
 
     @NotNull
-    private Boolean disabled = false;
+    private Boolean active = true;
 
-    public PersonDtoRequest(String name, Boolean disabled) {
+    public PersonDtoRequest(String name, Boolean active) {
         this.name = name;
-        this.disabled = disabled;
+        this.active = active;
     }
 
     public Person convert() {
-        return new Person(this.name, this.disabled);
+        return new Person(this.name, this.active);
     }
 
     public void update(Person person) {
-        person.setDisable(this.disabled);
+        person.setActive(this.active);
         person.setName(this.name);
     }
 }

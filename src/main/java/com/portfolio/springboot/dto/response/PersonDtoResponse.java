@@ -8,11 +8,11 @@ import lombok.Setter;
 public class PersonDtoResponse {
     private Long id;
     private String name;
-    private Boolean disable = false;
+    private Boolean active = true;
 
     public PersonDtoResponse(Person person) {
         this.id = person.getId();
         this.name = person.getName();
-        this.disable = person.getDisable();
+        this.active = person.getActive();
     }
 }

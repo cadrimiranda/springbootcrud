@@ -20,6 +20,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/persons")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class PersonController {
     @Autowired
     private PersonRepository personRepository;

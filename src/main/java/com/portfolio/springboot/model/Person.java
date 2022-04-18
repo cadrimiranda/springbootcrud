@@ -14,12 +14,12 @@ public class Person {
     @Column
     private String name;
     @Column
-    private Boolean disable = false;
+    private Boolean active = true;
 
     public Person() {}
 
-    public Person(String name, Boolean disable) {
+    public Person(String name, Boolean active) {
         this.name = name;
-        this.disable = disable;
+        this.active = active;
     }
 }
