@@ -5,10 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Builder
-@Getter @Setter
-public class PersonDtoResponse {
-    private Long id;
+@Getter
+@Setter
+public class ListDTO {
+    private Long value;
     private String name;
-    @Builder.Default
-    private Boolean active = true;
 }

@@ -1,8 +1,11 @@
 package com.portfolio.springboot.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.portfolio.springboot.dto.response.ListDTO;
 import com.portfolio.springboot.dto.response.MoneyEntranceDtoResponse;
 import com.portfolio.springboot.generic.GenericEntity;
+
+import antlr.StringUtils;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -59,4 +62,9 @@ public class MoneyEntrance implements Serializable, GenericEntity<MoneyEntrance,
     public MoneyEntranceDtoResponse toDtoResponse() {
         return new MoneyEntranceDtoResponse(this.id, this.value, this.entranceDay);
     }
+
+	@Override
+	public ListDTO toListDTO() {
+		return ListDTO.builder().value(id).name(String.format("%.2f (%s)", this.value, this.entranceDay.toString())).build();
+	}
 }

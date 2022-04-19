@@ -23,6 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/moneyentrance")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class MoneyEntranceController extends GenericController<
         MoneyEntrance,
         MoneyEntranceDtoResponse,

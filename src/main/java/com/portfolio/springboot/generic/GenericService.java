@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Setter
@@ -19,6 +20,10 @@ public abstract class GenericService<
     private GenericRepository<T, DtoResponse> repository;
 
     public GenericService() {
+    }
+
+    public List<T> getAll(){
+        return repository.findAll();
     }
 
     public Page<T> getPage(Pageable pageable){

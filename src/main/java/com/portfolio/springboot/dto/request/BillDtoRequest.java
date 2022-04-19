@@ -1,5 +1,6 @@
 package com.portfolio.springboot.dto.request;
 
+import com.portfolio.springboot.generic.GenericDtoInsert;
 import com.portfolio.springboot.model.Bill;
 import com.portfolio.springboot.model.Person;
 import lombok.Getter;
@@ -10,7 +11,10 @@ import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Getter @Setter
-public class BillDtoRequest {
+public class BillDtoRequest implements GenericDtoInsert<Bill> {
+    @NotNull @NotEmpty @Length(min = 5)
+    private String name;
+    
     @NotNull @NotEmpty @Length(min = 5)
     private String description;
 
@@ -27,14 +31,6 @@ public class BillDtoRequest {
     private Person owner;
 
     public Bill convert() {
-        return new Bill(this.description, this.value, this.recurrent, this.due, this.getOwner());
-    }
-
-    public void update(Bill bill) {
-        bill.setDescription(this.description);
-        bill.setDue(this.due);
-        bill.setRecurrent(this.recurrent);
-        bill.setValue(this.value);
-        bill.setOwner(this.getOwner());
+        return new Bill(this.description, this.name, this.value, this.recurrent, this.due, this.getOwner());
     }
 }

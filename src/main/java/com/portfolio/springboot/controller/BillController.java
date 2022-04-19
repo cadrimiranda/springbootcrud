@@ -3,6 +3,7 @@ package com.portfolio.springboot.controller;
 import com.portfolio.springboot.dto.request.BillDtoRequest;
 import com.portfolio.springboot.dto.response.BillDtoResponse;
 import com.portfolio.springboot.dto.update.BillDtoUpdate;
+import com.portfolio.springboot.generic.GenericController;
 import com.portfolio.springboot.model.Bill;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,34 +17,36 @@ import org.springframework.web.bind.annotation.*;
 import com.portfolio.springboot.repository.BillRepository;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.annotation.PostConstruct;
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@ControllerAdvice
 @RequestMapping("/bills")
-public class BillController {
-    @Autowired
-    private BillRepository billRepository;
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+public class BillController extends GenericController<Bill, BillDtoResponse, BillDtoRequest, BillDtoUpdate> {
+	@Autowired
+	private BillRepository billRepository;
+	
+    public BillController() {
+		super("bills");
+	}
 
-    @ExceptionHandler(value = Exception.class)
-    public ResponseEntity<?> handleException(Exception e) {
-        return ResponseEntity.internalServerError().build();
+    @PostConstruct
+    public void init() {
+        this.setRepository(this.billRepository);
     }
 
     @GetMapping("/getall")
     public Page<BillDtoResponse> getAll(
             @PageableDefault(sort = "due", direction = Sort.Direction.ASC) Pageable pagination
     ) {
-        return billRepository.findAll(pagination).map(BillDtoResponse::new);
+        return this.findAll(pagination);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<BillDtoResponse> getById(@PathVariable Long id) {
-        Optional<Bill> bill = billRepository.findById(id);
-        return bill.map(value -> ResponseEntity.ok(new BillDtoResponse(value))).orElseGet(() -> ResponseEntity.notFound().build());
+    	return this.getOne(id);
     }
 
     @PostMapping
@@ -52,12 +55,7 @@ public class BillController {
             @RequestBody @Valid BillDtoRequest billRequest,
             UriComponentsBuilder uriBuilder
     ) {
-        Bill bill = billRequest.convert();
-
-            billRepository.saveAndFlush(bill);
-
-            URI uri = uriBuilder.path("/bills/{id}").buildAndExpand(bill.getId()).toUri();
-            return ResponseEntity.created(uri).body(new BillDtoResponse(bill));
+    	return this.saveOne(billRequest, uriBuilder);
     }
 
     @PutMapping("/{id}")
@@ -67,14 +65,7 @@ public class BillController {
             return new ResponseEntity<>("You can't change to enable an disabled bill", HttpStatus.BAD_REQUEST);
         }
 
-        Optional<Bill> billOptional = billRepository.findById(id);
-        if (billOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Bill bill = billOptional.get();
-        billRequest.update(bill);
-        return ResponseEntity.ok(new BillDtoResponse(bill));
+        return this.update(id, billRequest);
     }
 
     @GetMapping("/byowner/{userid}")

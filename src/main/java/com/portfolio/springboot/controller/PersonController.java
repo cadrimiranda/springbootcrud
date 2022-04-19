@@ -1,9 +1,13 @@
 package com.portfolio.springboot.controller;
 
 import com.portfolio.springboot.dto.request.PersonDtoRequest;
+import com.portfolio.springboot.dto.response.ListDTO;
 import com.portfolio.springboot.dto.response.PersonDtoResponse;
+import com.portfolio.springboot.dto.update.PersonDtoUpdate;
+import com.portfolio.springboot.generic.GenericController;
 import com.portfolio.springboot.model.Person;
 import com.portfolio.springboot.repository.PersonRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,29 +17,38 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.net.URI;
-import java.util.Optional;
+import java.util.List;
 
 @RestController
 @RequestMapping("/persons")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-public class PersonController {
-    @Autowired
+public class PersonController extends GenericController<Person, PersonDtoResponse, PersonDtoRequest, PersonDtoUpdate> {
+
+	@Autowired
     private PersonRepository personRepository;
+	
+    public PersonController() {
+		super("persons");
+	}
+
+    @PostConstruct
+    public void init() {
+        this.setRepository(this.personRepository);
+    }
 
     @GetMapping("/getall")
     public Page<PersonDtoResponse> getAll(
             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pagination
     ) {
-        return personRepository.findAll(pagination).map(PersonDtoResponse::new);
+        return this.findAll(pagination);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PersonDtoResponse> getById(@PathVariable Long id) {
-        Optional<Person> persons = personRepository.findById(id);
-        return persons.map(value -> ResponseEntity.ok(new PersonDtoResponse(value))).orElseGet(() -> ResponseEntity.notFound().build());
+        return this.getOne(id);
     }
 
     @PostMapping
@@ -44,23 +57,17 @@ public class PersonController {
             @RequestBody @Valid PersonDtoRequest personRequest,
             UriComponentsBuilder uriBuilder
     ) {
-        Person person = personRequest.convert();
-        personRepository.save(person);
-
-        URI uri = uriBuilder.path("/persons/{id}").buildAndExpand(person.getId()).toUri();
-        return ResponseEntity.created(uri).body(new PersonDtoResponse(person));
+        return this.saveOne(personRequest, uriBuilder);
     }
 
     @PutMapping("/{id}")
     @Transactional
-    public  ResponseEntity<?> editOne(@PathVariable Long id, @RequestBody @Valid PersonDtoRequest personRequest) {
-        Optional<Person> personOptional = personRepository.findById(id);
-        if (personOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+    public  ResponseEntity<?> edit(@PathVariable Long id, @RequestBody @Valid PersonDtoUpdate personRequest) {
+        return this.update(id, personRequest);
+    }
 
-        Person person = personOptional.get();
-        personRequest.update(person);
-        return ResponseEntity.ok(new PersonDtoResponse(person));
+    @GetMapping("/listall")
+    public  ResponseEntity<List<ListDTO>> listItems() {
+        return this.listAll();
     }
 }

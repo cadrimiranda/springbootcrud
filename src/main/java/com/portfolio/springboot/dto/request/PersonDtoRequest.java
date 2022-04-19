@@ -1,5 +1,6 @@
 package com.portfolio.springboot.dto.request;
 
+import com.portfolio.springboot.generic.GenericDtoInsert;
 import com.portfolio.springboot.model.Person;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +10,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Getter @Setter
-public class PersonDtoRequest {
+public class PersonDtoRequest implements GenericDtoInsert<Person> {
     @NotNull
     @NotEmpty
     @Length(min = 5)
@@ -25,10 +26,5 @@ public class PersonDtoRequest {
 
     public Person convert() {
         return new Person(this.name, this.active);
-    }
-
-    public void update(Person person) {
-        person.setActive(this.active);
-        person.setName(this.name);
     }
 }

@@ -1,7 +1,8 @@
 package com.portfolio.springboot.repository;
 
+import com.portfolio.springboot.dto.response.PersonDtoResponse;
+import com.portfolio.springboot.generic.GenericRepository;
 import com.portfolio.springboot.model.Person;
-import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PersonRepository extends JpaRepository<Person, Long> {
+public interface PersonRepository extends GenericRepository<Person, PersonDtoResponse> {
 }

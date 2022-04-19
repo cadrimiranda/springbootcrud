@@ -5,8 +5,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.portfolio.springboot.dto.response.ListDTO;
+
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public abstract class GenericController<
         T extends GenericEntity<T,DtoResponse>,
@@ -51,6 +55,11 @@ public abstract class GenericController<
     public ResponseEntity<String> delete(Long id){
         service.delete(id);
         return ResponseEntity.ok("Ok");
+    }
+
+    public ResponseEntity<List<ListDTO>> listAll(){
+        List<ListDTO> all = service.getAll().stream().map(GenericEntity::toListDTO).collect(Collectors.toList());
+        return ResponseEntity.ok(all);
     }
 
     public void setRepository(GenericRepository<T, DtoResponse> repository) {

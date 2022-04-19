@@ -1,7 +1,7 @@
 package com.portfolio.springboot.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.portfolio.springboot.dto.response.BankAccountDtoResponse;
+import com.portfolio.springboot.dto.response.ListDTO;
 import com.portfolio.springboot.generic.GenericEntity;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,4 +40,10 @@ public class BankAccount implements Serializable, GenericEntity<BankAccount, Ban
                 .dueDay(this.dueDay)
                 .build();
     }
+
+	@Override
+	public ListDTO toListDTO() {
+		// TODO Auto-generated method stub
+		return ListDTO.builder().name(this.name + " - " + this.person.getName()).value(id).build();
+	}
 }
