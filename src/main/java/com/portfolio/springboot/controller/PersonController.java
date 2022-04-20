@@ -7,6 +7,7 @@ import com.portfolio.springboot.dto.update.PersonDtoUpdate;
 import com.portfolio.springboot.generic.GenericController;
 import com.portfolio.springboot.model.Person;
 import com.portfolio.springboot.repository.PersonRepository;
+import com.portfolio.springboot.service.PersonService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,46 +29,46 @@ import java.util.List;
 public class PersonController extends GenericController<Person, PersonDtoResponse, PersonDtoRequest, PersonDtoUpdate> {
 
 	@Autowired
-    private PersonRepository personRepository;
-	
-    public PersonController() {
+	private PersonRepository personRepository;
+
+	@Autowired
+	private PersonService personService;
+
+	public PersonController() {
 		super("persons");
 	}
 
-    @PostConstruct
-    public void init() {
-        this.setRepository(this.personRepository);
-    }
+	@PostConstruct
+	public void init() {
+		this.PostContructor(personRepository, personService);
+	}
 
-    @GetMapping("/getall")
-    public Page<PersonDtoResponse> getAll(
-            @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pagination
-    ) {
-        return this.findAll(pagination);
-    }
+	@GetMapping("/getall")
+	public Page<PersonDtoResponse> getAll(
+			@PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pagination) {
+		return this.findAll(pagination);
+	}
 
-    @GetMapping("/{id}")
-    public ResponseEntity<PersonDtoResponse> getById(@PathVariable Long id) {
-        return this.getOne(id);
-    }
+	@GetMapping("/{id}")
+	public ResponseEntity<PersonDtoResponse> getById(@PathVariable Long id) {
+		return this.getOne(id);
+	}
 
-    @PostMapping
-    @Transactional
-    public ResponseEntity<PersonDtoResponse> saveOne(
-            @RequestBody @Valid PersonDtoRequest personRequest,
-            UriComponentsBuilder uriBuilder
-    ) {
-        return this.saveOne(personRequest, uriBuilder);
-    }
+	@PostMapping
+	@Transactional
+	public ResponseEntity<PersonDtoResponse> saveOne(@RequestBody @Valid PersonDtoRequest personRequest,
+			UriComponentsBuilder uriBuilder) {
+		return this.create(personRequest, uriBuilder);
+	}
 
-    @PutMapping("/{id}")
-    @Transactional
-    public  ResponseEntity<?> edit(@PathVariable Long id, @RequestBody @Valid PersonDtoUpdate personRequest) {
-        return this.update(id, personRequest);
-    }
+	@PutMapping("/{id}")
+	@Transactional
+	public ResponseEntity<?> edit(@PathVariable Long id, @RequestBody @Valid PersonDtoUpdate personRequest) {
+		return this.update(id, personRequest);
+	}
 
-    @GetMapping("/listall")
-    public  ResponseEntity<List<ListDTO>> listItems() {
-        return this.listAll();
-    }
+	@GetMapping("/listall")
+	public ResponseEntity<List<ListDTO>> listItems() {
+		return this.listAll();
+	}
 }

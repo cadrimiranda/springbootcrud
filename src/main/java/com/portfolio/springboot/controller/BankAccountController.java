@@ -28,56 +28,50 @@ import com.portfolio.springboot.dto.update.BankAccountDtoUpdate;
 import com.portfolio.springboot.generic.GenericController;
 import com.portfolio.springboot.model.BankAccount;
 import com.portfolio.springboot.repository.BankRepository;
+import com.portfolio.springboot.service.BankAccountService;
 
 @RestController
 @RequestMapping("/bankaccount")
-public class BankAccountController extends GenericController<
-	BankAccount,
-	BankAccountDtoResponse,
-	BankAccountDtoRequest,
-	BankAccountDtoUpdate
-> {
+public class BankAccountController
+		extends GenericController<BankAccount, BankAccountDtoResponse, BankAccountDtoRequest, BankAccountDtoUpdate> {
 	@Autowired
 	private BankRepository bankRepository;
 
-    public BankAccountController() {
-        super("bankaccount");
-    }
+	@Autowired
+	private BankAccountService bankAccountService;
 
-    @PostConstruct
-    public void init() {
-        this.setRepository(this.bankRepository);
-    }
+	public BankAccountController() {
+		super("bankaccount");
+	}
 
-    @GetMapping("/getall")
-    public Page<BankAccountDtoResponse> getAll(
-            @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pagination
-    ) {
-        return this.findAll(pagination);
-    }
+	@PostConstruct
+	public void init() {
+		this.PostContructor(bankRepository, bankAccountService);
+	}
 
-    @GetMapping("/{id}")
-    public ResponseEntity<BankAccountDtoResponse> getById(@PathVariable Long id) {
-        return this.getOne(id);
-    }
+	@GetMapping("/getall")
+	public Page<BankAccountDtoResponse> getAll(
+			@PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pagination) {
+		return this.findAll(pagination);
+	}
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    @Transactional
-    public ResponseEntity<?> saveOne(
-            @RequestBody @Valid BankAccountDtoRequest bankAccountDtoRequest,
-            UriComponentsBuilder uriBuilder
-    ) {
-        return this.create(bankAccountDtoRequest, uriBuilder);
-    }
+	@GetMapping("/{id}")
+	public ResponseEntity<BankAccountDtoResponse> getById(@PathVariable Long id) {
+		return this.getOne(id);
+	}
 
-    @GetMapping("/byowner/{userid}")
-    public ResponseEntity<List<BankAccountDtoResponse>> getBillsByUser(@PathVariable Long userid) {
-        List<BankAccountDtoResponse> bills = bankRepository
-                .findAllByPersonId(userid)
-                .stream()
-                .map(BankAccount::toDtoResponse)
-                .toList();
-        return ResponseEntity.ok(bills);
-    }
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@Transactional
+	public ResponseEntity<BankAccountDtoResponse> saveOne(@RequestBody @Valid BankAccountDtoRequest bankAccountDtoRequest,
+			UriComponentsBuilder uriBuilder) {
+		return this.create(bankAccountDtoRequest, uriBuilder);
+	}
+
+	@GetMapping("/byowner/{userid}")
+	public ResponseEntity<List<BankAccountDtoResponse>> getBillsByUser(@PathVariable Long userid) {
+		List<BankAccountDtoResponse> bills = bankRepository.findAllByPersonId(userid).stream()
+				.map(BankAccount::toDtoResponse).toList();
+		return ResponseEntity.ok(bills);
+	}
 }

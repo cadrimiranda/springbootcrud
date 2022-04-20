@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.portfolio.springboot.repository.BillRepository;
+import com.portfolio.springboot.service.BillService;
+
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.PostConstruct;
@@ -27,50 +29,50 @@ import java.util.List;
 public class BillController extends GenericController<Bill, BillDtoResponse, BillDtoRequest, BillDtoUpdate> {
 	@Autowired
 	private BillRepository billRepository;
-	
-    public BillController() {
+
+	@Autowired
+	private BillService billService;
+
+	public BillController() {
 		super("bills");
 	}
 
-    @PostConstruct
-    public void init() {
-        this.setRepository(this.billRepository);
-    }
+	@PostConstruct
+	public void init() {
+		this.PostContructor(billRepository, billService);
+	}
 
-    @GetMapping("/getall")
-    public Page<BillDtoResponse> getAll(
-            @PageableDefault(sort = "due", direction = Sort.Direction.ASC) Pageable pagination
-    ) {
-        return this.findAll(pagination);
-    }
+	@GetMapping("/getall")
+	public Page<BillDtoResponse> getAll(
+			@PageableDefault(sort = "due", direction = Sort.Direction.ASC) Pageable pagination) {
+		return this.findAll(pagination);
+	}
 
-    @GetMapping("/{id}")
-    public ResponseEntity<BillDtoResponse> getById(@PathVariable Long id) {
-    	return this.getOne(id);
-    }
+	@GetMapping("/{id}")
+	public ResponseEntity<BillDtoResponse> getById(@PathVariable Long id) {
+		return this.getOne(id);
+	}
 
-    @PostMapping
-    @Transactional(rollbackFor = Exception.class, readOnly = false)
-    public ResponseEntity<?> saveOne(
-            @RequestBody @Valid BillDtoRequest billRequest,
-            UriComponentsBuilder uriBuilder
-    ) {
-    	return this.saveOne(billRequest, uriBuilder);
-    }
+	@PostMapping
+	@Transactional(rollbackFor = Exception.class, readOnly = false)
+	public ResponseEntity<BillDtoResponse> saveOne(@RequestBody @Valid BillDtoRequest billRequest, UriComponentsBuilder uriBuilder) {
+		return this.create(billRequest, uriBuilder);
+	}
 
-    @PutMapping("/{id}")
-    @Transactional
-    public  ResponseEntity<?> editOne(@PathVariable Long id, @RequestBody @Valid BillDtoUpdate billRequest) {
-        if (billRequest.getDisabled() == Boolean.FALSE) {
-            return new ResponseEntity<>("You can't change to enable an disabled bill", HttpStatus.BAD_REQUEST);
-        }
+	@PutMapping("/{id}")
+	@Transactional
+	public ResponseEntity<?> editOne(@PathVariable Long id, @RequestBody @Valid BillDtoUpdate billRequest) {
+		if (billRequest.getDisabled() == Boolean.FALSE) {
+			return new ResponseEntity<>("You can't change to enable an disabled bill", HttpStatus.BAD_REQUEST);
+		}
 
-        return this.update(id, billRequest);
-    }
+		return this.update(id, billRequest);
+	}
 
-    @GetMapping("/byowner/{userid}")
-    public ResponseEntity<List<BillDtoResponse>> getBillsByUser(@PathVariable Long userid) {
-        List<BillDtoResponse> bills = billRepository.findAllByOwnerId(userid).stream().map(BillDtoResponse::new).toList();
-        return ResponseEntity.ok(bills);
-    }
+	@GetMapping("/byowner/{userid}")
+	public ResponseEntity<List<BillDtoResponse>> getBillsByUser(@PathVariable Long userid) {
+		List<BillDtoResponse> bills = billRepository.findAllByOwnerId(userid).stream().map(BillDtoResponse::new)
+				.toList();
+		return ResponseEntity.ok(bills);
+	}
 }

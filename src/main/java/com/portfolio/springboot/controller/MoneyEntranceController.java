@@ -5,6 +5,7 @@ import com.portfolio.springboot.dto.response.MoneyEntranceDtoResponse;
 import com.portfolio.springboot.generic.GenericController;
 import com.portfolio.springboot.model.MoneyEntrance;
 import com.portfolio.springboot.repository.MoneyEntranceRepository;
+import com.portfolio.springboot.service.MoneyEntranceService;
 import com.portfolio.springboot.utils.DtoUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,54 +25,46 @@ import java.util.List;
 @RestController
 @RequestMapping("/moneyentrance")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-public class MoneyEntranceController extends GenericController<
-        MoneyEntrance,
-        MoneyEntranceDtoResponse,
-        MoneyEntranceDtoRequest,
-        DtoUpdate<MoneyEntrance>
-        >
-{
-    @Autowired
-    private MoneyEntranceRepository moneyEntranceRepository;
+public class MoneyEntranceController extends
+		GenericController<MoneyEntrance, MoneyEntranceDtoResponse, MoneyEntranceDtoRequest, DtoUpdate<MoneyEntrance>> {
+	@Autowired
+	private MoneyEntranceRepository moneyEntranceRepository;
 
-    public MoneyEntranceController() {
-        super("moneyentrance");
-    }
+	@Autowired
+	private MoneyEntranceService moneyEntranceService;
 
-    @PostConstruct
-    public void init() {
-        this.setRepository(this.moneyEntranceRepository);
-    }
+	public MoneyEntranceController() {
+		super("moneyentrance");
+	}
 
-    @GetMapping("/getall")
-    public Page<MoneyEntranceDtoResponse> getAll(
-            @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pagination
-    ) {
-        return this.findAll(pagination);
-    }
+	@PostConstruct
+	public void init() {
+		this.PostContructor(moneyEntranceRepository, moneyEntranceService);
+	}
 
-    @GetMapping("/{id}")
-    public ResponseEntity<MoneyEntranceDtoResponse> getById(@PathVariable Long id) {
-        return this.getOne(id);
-    }
+	@GetMapping("/getall")
+	public Page<MoneyEntranceDtoResponse> getAll(
+			@PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pagination) {
+		return this.findAll(pagination);
+	}
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    @Transactional
-    public ResponseEntity<?> saveOne(
-            @RequestBody @Valid MoneyEntranceDtoRequest moneyEntranceDtoRequest,
-            UriComponentsBuilder uriBuilder
-    ) {
-        return this.create(moneyEntranceDtoRequest, uriBuilder);
-    }
+	@GetMapping("/{id}")
+	public ResponseEntity<MoneyEntranceDtoResponse> getById(@PathVariable Long id) {
+		return this.getOne(id);
+	}
 
-    @GetMapping("/byowner/{userid}")
-    public ResponseEntity<List<MoneyEntranceDtoResponse>> getBillsByUser(@PathVariable Long userid) {
-        List<MoneyEntranceDtoResponse> bills = moneyEntranceRepository
-                .findAllByOwnerId(userid)
-                .stream()
-                .map(MoneyEntrance::toDtoResponse)
-                .toList();
-        return ResponseEntity.ok(bills);
-    }
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@Transactional
+	public ResponseEntity<?> saveOne(@RequestBody @Valid MoneyEntranceDtoRequest moneyEntranceDtoRequest,
+			UriComponentsBuilder uriBuilder) {
+		return this.create(moneyEntranceDtoRequest, uriBuilder);
+	}
+
+	@GetMapping("/byowner/{userid}")
+	public ResponseEntity<List<MoneyEntranceDtoResponse>> getBillsByUser(@PathVariable Long userid) {
+		List<MoneyEntranceDtoResponse> bills = moneyEntranceRepository.findAllByOwnerId(userid).stream()
+				.map(MoneyEntrance::toDtoResponse).toList();
+		return ResponseEntity.ok(bills);
+	}
 }

@@ -20,12 +20,18 @@ public abstract class GenericController<
         >
 {
 
-    private final GenericService<T, DtoResponse, DtoInsert, DtoUpdate> service;
+    private GenericService<T, DtoResponse, DtoInsert, DtoUpdate> service;
     private String path;
 
     public GenericController(String path) {
         this.path = path;
-        this.service = new GenericService<T, DtoResponse, DtoInsert, DtoUpdate>() {};
+        this.service = null;
+    }
+    
+    public void PostContructor(GenericRepository<T, DtoResponse> repository, GenericService<T, DtoResponse, DtoInsert, DtoUpdate> service) {
+    	this.service = service;
+    	this.service.setRepository(repository);
+    	
     }
 
     public Page<DtoResponse> findAll(Pageable pageable){
@@ -44,7 +50,7 @@ public abstract class GenericController<
         return ResponseEntity.notFound().build() ;
     }
 
-    public ResponseEntity<?> create(DtoInsert created,
+    public ResponseEntity<DtoResponse> create(DtoInsert created,
                                     UriComponentsBuilder uriBuilder
     ){
         T dboDomain = service.create(created);
@@ -60,9 +66,5 @@ public abstract class GenericController<
     public ResponseEntity<List<ListDTO>> listAll(){
         List<ListDTO> all = service.getAll().stream().map(GenericEntity::toListDTO).collect(Collectors.toList());
         return ResponseEntity.ok(all);
-    }
-
-    public void setRepository(GenericRepository<T, DtoResponse> repository) {
-        this.service.setRepository(repository);
     }
 }
