@@ -24,7 +24,7 @@ public class BillDtoRequest implements GenericDtoInsert<Bill> {
     @NotNull
     private Boolean recurrent = false;
 
-    @NotNull @Future
+    @NotNull @FutureOrPresent
     private LocalDate due;
 
     @NotNull
