@@ -1,6 +1,5 @@
 package com.portfolio.springboot.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.portfolio.springboot.model.Bill;
 
 import lombok.AllArgsConstructor;
@@ -21,7 +20,6 @@ public class BillDtoResponse {
     private Boolean recurrent;
     private LocalDate due;
     private Boolean disabled;
-    @JsonProperty("owner_id")
     private Long ownerId;
     private String ownerName;
     

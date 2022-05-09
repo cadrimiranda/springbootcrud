@@ -21,6 +21,7 @@ public class Bill implements Serializable, GenericEntity<Bill, BillDtoResponse> 
 	private static final long serialVersionUID = 1L;
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", updatable = false, unique = true, nullable = false)
     private Long id;
     @Column
     private String name;
@@ -54,17 +55,7 @@ public class Bill implements Serializable, GenericEntity<Bill, BillDtoResponse> 
 
 	@Override
 	public BillDtoResponse toDtoResponse() {
-		return BillDtoResponse.builder()
-				.description(description)
-				.disabled(disabled)
-				.due(due)
-				.id(id)
-				.name(name)
-				.ownerId(id)
-				.ownerName(name)
-				.recurrent(recurrent)
-				.value(value)
-				.build();
+		return new BillDtoResponse(this);
 	}
 
 	@Override
